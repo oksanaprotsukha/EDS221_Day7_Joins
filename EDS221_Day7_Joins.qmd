@@ -1,0 +1,64 @@
+---
+title: "EDS221_Day7_Joins"
+author: "OP"
+format: html
+editor: visual
+execute: 
+  warning: false
+---
+
+```{r}
+library(palmerpenguins)
+library(tidyverse)
+```
+
+## Data wrangling refresher
+
+1.  Starting from penguins write a single piped sequence in which you include:
+
+-   only penguins at Dream and Biscoe islands
+-   Remove the year and sex variables
+-   Add a new column body_mass_kg with penguin mass converted from g to kg
+-   Rename the island variable to location
+
+```{r}
+penguins_dream_biscoe <- penguins %>% 
+  # only penguins at Dream and Biscoe islands
+  filter(island %in% c("Dream", "Biscoe")) %>% 
+  # Remove the year and sex variables
+  select(-year, -sex) %>% 
+  # Add a new column body_mass_kg with penguin mass converted from g to kg
+  mutate(body_mass_kg = body_mass_g/1000) %>% 
+  # Rename the island variable to location
+  rename(location = island)
+```
+
+2.  Starting from penguins write a single piped sequence in which you include:
+
+-   Limit to Adele penguins
+-   Remove any observations where flipper_length_mm is NA (!is.na()) or drop_na
+-   group the data by sex
+-   Create a summary table that contains the mean, std. deviation and sample size of flipper lengths for male and female Adele penguins
+
+```{r}
+penguins_adelie <- penguins %>% 
+  filter(species == "Adelie") %>% 
+  filter(!is.na(flipper_length_mm)) %>% 
+  filter(!is.na(sex)) %>% 
+  group_by(sex) %>% 
+  summarise(adelie_mean = mean(flipper_length_mm),
+            adelie_sd = sd(flipper_length_mm),
+            total_adelie_sample = n())
+
+```
+
+```{r}
+# Alternative method to the task #2
+penguins_adelie_2 <- penguins %>% 
+  filter(species == "Adelie") %>% 
+  # remove all rows with NA values
+  drop_na() %>% 
+  # count with group_by
+  count(species, sex)
+
+```
