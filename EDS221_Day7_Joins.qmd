@@ -58,7 +58,55 @@ penguins_adelie_2 <- penguins %>%
   filter(species == "Adelie") %>% 
   # remove all rows with NA values
   drop_na() %>% 
-  # count with group_by
+  # count with group by
   count(species, sex)
 
+```
+
+```{r}
+animals <- data.frame(
+  stringsAsFactors = FALSE,
+          location = c("lagoon", "bluff", "creek", "oaks", "bluff"),
+           species = c("bobcat", "coyote", "fox", "squirrel", "bobcat"),
+          maturity = c("adult", "juvenile", "adult", "juvenile", "adult")
+)
+```
+
+```{r}
+sites <- data.frame(
+  stringsAsFactors = FALSE,
+          location = c("beach", "lagoon", "bluff", "oaks"),
+    full_site_name = c("Goleta Beach","UCSB Lagoon",
+                       "Ellwood Mesa","Fremont Campground"),
+      jurisdiction = c("SB City", "UCSB", "SB City", "USFS")
+)
+```
+
+## Joins
+
+### full_join()
+
+```{r}
+full_join_ex <- full_join(animals, sites)
+```
+
+### left_join()
+
+```{r}
+left_join_ex <- left_join(animals, sites)
+```
+
+### inner_join()
+
+```{r}
+inner_join_ex <- inner_join(animals, sites)
+dim(inner_join_ex)
+```
+
+### full_join() with filters
+
+```{r}
+full_join_filter_ex <- full_join(animals, sites) %>% 
+  drop_na()
+dim(inner_join_ex)
 ```
