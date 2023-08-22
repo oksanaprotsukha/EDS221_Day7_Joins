@@ -110,3 +110,178 @@ full_join_filter_ex <- full_join(animals, sites) %>%
   drop_na()
 dim(inner_join_ex)
 ```
+
+## Data-times with lubridate()
+
+-   ymd: year-month-day
+-   mdy: month-day-year
+-   dmy: day-month-year
+
+```{r}
+mdy_date_ex1 <- lubridate::mdy("03-15-1998")
+mdy_date_ex1
+class(mdy_date_ex1)
+```
+
+```{r}
+mdy_date_ex2 <- lubridate::mdy("03/15/1998")
+mdy_date_ex2
+class(mdy_date_ex2)
+```
+
+```{r}
+mdy_date_ex3 <- lubridate::mdy("03061998")
+mdy_date_ex3
+class(mdy_date_ex3)
+```
+
+```{r}
+mdy_date_ex4 <- lubridate::dmy("08-Jun-1974")
+mdy_date_ex4
+class(mdy_date_ex4)
+```
+
+```{r}
+mdy_date_ex5 <- lubridate::dmy("08, June 1974")
+mdy_date_ex5
+class(mdy_date_ex5)
+```
+
+```{r}
+mdy_date_ex6 <- lubridate::mdy("June 8th 1974")
+mdy_date_ex6
+class(mdy_date_ex6)
+```
+
+### Break the lubridate functions
+
+```{r}
+mdy_date_ex7 <- lubridate::dmy("June 8th 1974")
+mdy_date_ex7
+class(mdy_date_ex7)
+```
+
+```{r}
+mdy_date_ex7 <- lubridate::dmy(651974)
+mdy_date_ex7
+class(mdy_date_ex7)
+```
+
+### Adding times to the dates
+
+```{r}
+time_ex1 <- lubridate::ymd_hm("2020-08-12 11:18")
+time_ex1
+```
+
+```{r}
+# Parse June 2, 1982 at 4pm UTC (16:00) as a date in R
+
+timeUTC_ex1 <- lubridate::mdy_h("June 2, 1982 4pm")
+timeUTC_ex1
+
+```
+
+```{r}
+current_dtm <- paste(Sys.time())
+print(paste("Current date and time in PST:", current_dtm))
+print(paste("Current date and time in Europe/Kyiv:",lubridate::with_tz(current_dtm, "Europe/Kyiv")))
+print(paste("Current date and time in Europe/Paris:",lubridate::with_tz(current_dtm, "Europe/Paris")))
+print(paste("Current date and time in Asia/Taipei:",lubridate::with_tz(current_dtm, "Asia/Taipei")))
+```
+
+Access different parts of date-time
+
+```{r}
+lubridate::week(current_dtm)
+```
+
+```{r}
+urchin_counts <- data.frame(
+  date = c("Oct 12, 2004", "October 18, 2007", "February 12, 2007", "Feb 14, 2008"),
+  species = c("purple", "red", "red", "red"),
+  size_mm = c(19, 24, 18, 11)
+)
+urchin_counts
+```
+
+```{r}
+# convert dates
+urchin_mean_by_month <- urchin_counts %>% 
+  #Convert all dates into ISO8601 format
+  mutate(date = lubridate::mdy(date)) %>% 
+  #Parse month from the date values in a separate column
+  mutate(month = lubridate::month(date)) %>% 
+  group_by(month) %>% 
+  summarise(size_mean = mean(size_mm))
+
+urchin_mean_by_month
+```
+
+## Strings with stringer
+
+Use str_detect to detect a string pattern
+
+```{r}
+my_string <- "Teddy loves salmon and kibble and toys"
+str_detect(my_string, "dolphin")
+str_detect(my_string, "kibble")
+str_detect(my_string, "Kibble")
+str_detect(my_string, tolower("Kibble"))
+```
+
+```{r}
+my_string_2 <- c("burrito", "fish taco", "Taco salad", "superburrito")
+```
+
+```{r}
+str_detect(tolower(my_string_2), "taco")
+str_detect(tolower(my_string_2), "Taco")
+```
+
+```{r}
+# filter with a string
+starwars %>% 
+  filter(str_detect(name, pattern = "Skywalker"))
+```
+
+```{r}
+# replace a string
+starwars %>% 
+  mutate(name_new = str_replace(name, pattern = "Sky", replacement = "Fire")) %>% 
+  filter(str_detect(name_new, pattern = "Firewalker"))
+```
+
+str_trim
+
+str_squish
+
+```{r}
+my_string_3 <- "    Hi my name   is teddy !!!"
+```
+
+```{r}
+str_trim(my_string_3)
+str_squish(my_string_3)
+
+```
+
+```{r}
+str_to_lower(my_string_3)
+```
+
+```{r}
+str_to_title(my_string_3)
+```
+
+```{r}
+starwars %>% 
+  mutate(species_lower = str_to_lower(species))
+```
+
+```{r}
+# replace a string
+starwars %>% 
+  mutate(name_new = str_replace(name, pattern = "Sky", replacement = "Fire")) %>% 
+  filter(str_detect(name_new, pattern = "Firewalker"))
+```
